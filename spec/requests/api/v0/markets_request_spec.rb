@@ -1,50 +1,46 @@
 require 'rails_helper'
 
 describe "Markets" do
-  before(:each) do
+  it "sends a list of all markets" do
     market1 = create(:market)
     market2 = create(:market)
     market3 = create(:market, vendors: [create(:vendor)])
     market4 = create(:market, vendors: create_list(:vendor, 2))
-    @markets = [market1, market2, market3, market4]
-  end
-
-  it "sends a list of markets" do
     get '/api/v0/markets'
     expect(response).to be_successful
-    @markets = JSON.parse(response.body, symbolize_names: true)
+    markets = JSON.parse(response.body, symbolize_names: true)
+    expect(markets[:data].count).to eq(4)
+  
 
-    expect(@markets[:details].count).to eq(3)
-
-    @markets[:details].each do |market|
+    markets[:data].each do |market|
       expect(market).to have_key(:id)
       expect(market[:id]).to be_an(Integer)
 
-      data = market[:data]
+      details = market[:attributes]
 
-      expect(data).to have_key(:name)
-      expect(data[:name]).to be_an(String)
+      expect(details).to have_key(:name)
+      expect(details[:name]).to be_an(String)
 
-      expect(data).to have_key(:street)
-      expect(data[:street]).to be_an(String)
+      expect(details).to have_key(:street)
+      expect(details[:street]).to be_an(String)
 
-      expect(data).to have_key(:city)
-      expect(data[:city]).to be_an(String)
+      expect(details).to have_key(:city)
+      expect(details[:city]).to be_an(String)
 
-      expect(data).to have_key(:county)
-      expect(data[:county]).to be_an(String)
+      expect(details).to have_key(:county)
+      expect(details[:county]).to be_an(String)
 
-      expect(data).to have_key(:state)
-      expect(data[:state]).to be_an(String)
+      expect(details).to have_key(:state)
+      expect(details[:state]).to be_an(String)
 
-      expect(data).to have_key(:zip)
-      expect(data[:zip]).to be_an(String)
+      expect(details).to have_key(:zip)
+      expect(details[:zip]).to be_an(String)
 
-      expect(data).to have_key(:lat)
-      expect(data[:lat]).to be_an(String)
+      expect(details).to have_key(:lat)
+      expect(details[:lat]).to be_an(String)
 
-      expect(data).to have_key(:lon)
-      expect(data[:lon]).to be_an(String)
+      expect(details).to have_key(:lon)
+      expect(details[:lon]).to be_an(String)
     end
   end
 
