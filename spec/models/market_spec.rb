@@ -15,4 +15,13 @@ RSpec.describe Market, type: :model do
     it { should validate_presence_of(:lat) }
     it { should validate_presence_of(:lon) }
   end
+
+  describe "vendor_count" do
+    it 'counts the number of vendors' do
+      market = create(:market)
+      vendor = create_list(:vendor, 3)
+      market.vendors << vendor
+      expect(market.vendor_count).to eq(3)
+    end
+  end
 end
