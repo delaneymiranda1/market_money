@@ -88,7 +88,7 @@ describe "Markets" do
   end
 
   it 'gets an error if invalid market id is given' do 
-    get "/api/v0/markets/1"
+    get "/api/v0/markets/123123123123"
     expect(response).to_not be_successful
     expect(response.status).to eq(404)
 
@@ -96,6 +96,6 @@ describe "Markets" do
 
     expect(data[:errors]).to be_a(Array)
     expect(data[:errors].first[:status]).to eq("404")
-    expect(data[:errors].first[:title]).to eq("Couldn't find Market with 'id'=1")
+    expect(data[:errors].first[:title]).to eq("Couldn't find Market with 'id'=123123123123")
   end
 end
