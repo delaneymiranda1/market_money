@@ -41,8 +41,9 @@ describe "Markets" do
 
       expect(details).to have_key(:lon)
       expect(details[:lon]).to be_an(String)
+
+      expect(details).to have_key(:vendor_count)
+      expect(details[:vendor_count]).to be_an(Integer)
     end
   end
-
-
 end
