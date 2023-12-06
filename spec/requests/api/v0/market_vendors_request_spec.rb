@@ -4,9 +4,13 @@ describe "Market Vendors" do
 
 
   it 'gets all vendors for a market' do
-    market1 = create(:market, vendors: create_list(:vendor, 2))
-    market2 = create(:market, vendors: create_list(:vendor, 3))
+    vendors = create_list(:vendor, 2)
+    market = create(:market, vendors: vendors)
+    vendors2 = create_list(:vendor, 3)
+    market2 = create(:market, vendors: vendors2)
+
     get "/api/v0/markets/#{market.id}/vendors"
+    # require 'pry'; binding.pry
     expect(response).to be_successful
 
     vendors = JSON.parse(response.body, symbolize_names: true)
@@ -21,26 +25,26 @@ describe "Market Vendors" do
       expect(vendor[:type]).to be_an(String)
       expect(vendor[:type]).to eq('vendor')
 
-      data = vendor[:attributes]
+      attributes = vendor[:attributes]
 
-      expect(data).to have_key(:name)
-      expect(data[:name]).to be_an(String)
+      expect(attributes).to have_key(:name)
+      expect(attributes[:name]).to be_an(String)
 
-      expect(data).to have_key(:description)
-      expect(data[:description]).to be_an(String)
+      expect(attributes).to have_key(:description)
+      expect(attributes[:description]).to be_an(String)
 
-      expect(data).to have_key(:contact_name)
-      expect(data[:contact_name]).to be_an(String)
+      expect(attributes).to have_key(:contact_name)
+      expect(attributes[:contact_name]).to be_an(String)
 
-      expect(data).to have_key(:contact_phone)
-      expect(data[:contact_phone]).to be_an(String)
+      expect(attributes).to have_key(:contact_phone)
+      expect(attributes[:contact_phone]).to be_an(String)
 
       expect(attributes).to have_key(:credit_accepted)
       expect(attributes[:credit_accepted]).to be_a(TrueClass).or be_a(FalseClass)
     end
   end
 
-  xit 'gets an error for vendors for a market if a wrong id is passed in' do
+  it 'gets an error for vendors for a market if a wrong id is passed in' do
     get "/api/v0/markets/123123123123/vendors"
     expect(response).to_not be_successful
     expect(response.status).to eq(404)
