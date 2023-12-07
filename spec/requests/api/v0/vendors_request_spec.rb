@@ -42,4 +42,43 @@ describe "Vendors" do
     expect(data[:errors].first[:status]).to eq("404")
     expect(data[:errors].first[:title]).to eq("Couldn't find Vendor with 'id'=1")
   end
+
+  it 'creates a vendor' do
+    vendor = ({
+      name: 'Johns Juices',
+      description: 'Green Juice',
+      contact_name: 'John Doe',
+      contact_phone: '1-888-777-6666',
+      credit_accepted: true
+    })
+    headers = {"CONTENT_TYPE" => "application/json"}
+    
+    post "/api/v0/vendors", headers: headers, params: JSON.generate(vendor: vendor_params)
+    expect(response).to be_successful
+    new_vendor = Vendor.last 
+
+    expect(new_vendor.name).to eq(vendor[:name])
+    expect(new_vendor.description).to eq(vendor[:description])
+    expect(new_vendor.contact_name).to eq(vendor[:contact_name])
+    expect(new_vendor.contact_phone).to eq(vendor[:contact_phone])
+    expect(new_vendor.credit_accepted).to eq(vendor[:credit_accepted])
+  end
+
+  it 'gets an error if contact name is not filled in when creating a new vendor' do
+    vendor = ({
+      name: 'Johns Juices',
+      description: 'Green Juice',
+      contact_phone: '1-888-777-6666',
+      credit_accepted: true
+    })
+
+    headers = {"CONTENT_TYPE" => "application/json"}
+    post "/api/v0/vendors", headers: headers, params: JSON.generate(vendor: vendor_params)
+    expect(response).to_not be_successful
+    data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(data[:errors]).to be_a(Array)
+    expect(data[:errors].first[:status]).to eq("400")
+    expect(data[:errors].first[:title]).to eq("Validation failed: Contact name can't be blank")
+  end
 end
