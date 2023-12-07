@@ -53,7 +53,7 @@ describe "Vendors" do
     })
     headers = {"CONTENT_TYPE" => "application/json"}
     
-    post "/api/v0/vendors", headers: headers, params: JSON.generate(vendor: vendor_params)
+    post "/api/v0/vendors", headers: headers, params: JSON.generate(vendor: vendor)
     expect(response).to be_successful
     new_vendor = Vendor.last 
 
@@ -73,7 +73,7 @@ describe "Vendors" do
     })
 
     headers = {"CONTENT_TYPE" => "application/json"}
-    post "/api/v0/vendors", headers: headers, params: JSON.generate(vendor: vendor_params)
+    post "/api/v0/vendors", headers: headers, params: JSON.generate(vendor: vendor)
     expect(response).to_not be_successful
     data = JSON.parse(response.body, symbolize_names: true)
 
