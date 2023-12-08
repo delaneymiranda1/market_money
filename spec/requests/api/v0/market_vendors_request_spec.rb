@@ -55,4 +55,28 @@ describe "Market Vendors" do
     expect(data[:errors].first[:status]).to eq("404")
     expect(data[:errors].first[:title]).to eq("Couldn't find Market with 'id'=123123123123")
   end
+
+  it 'creates a market vendor' do
+    market = create(:market)
+    vendor = create(:vendor)
+
+    market_vendor_params = ({
+      market_id: market.id,
+      vendor_id: vendor.id
+    })
+    headers = {"CONTENT_TYPE" => "application/json"}
+    post "/api/v0/market_vendors", headers: headers, params: JSON.generate(market_vendor: market_vendor_params)
+    market_vendor = MarketVendor.last
+
+    expect(response).to be_successful
+    expect(response.status).to eq(201)
+    expect(market_vendor.market_id).to eq(market_vendor_params[:market_id])
+    expect(market_vendor.vendor_id).to eq(market_vendor_params[:vendor_id])
+
+    get "/api/v0/markets/#{market.id}/vendors"
+    vendors_parsed = JSON.parse(response.body, symbolize_names: true)
+    new_vendor_data = vendors_parsed[:data].last
+
+    expect(new_vendor_data[:relationships][:markets][:data].last[:id].to_i).to eq(market.id)
+  end
 end
